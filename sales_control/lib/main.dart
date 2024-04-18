@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sales_control/page/pageFiados.dart';
-import 'package:sales_control/page/pageRecebidos.dart';
+import 'package:sales_control/page/editar_cliente.dart';
+import 'package:sales_control/page/page_fiados.dart';
+import 'package:sales_control/page/page_recebidos.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,9 +24,9 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Menu Principal'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Menu Principal'),
+      // ),
       body: Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -33,7 +34,7 @@ class HomeScreen extends StatelessWidget {
             CustomButton(icon: Icons.money, text: 'Fiados', onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FiadosScreen()),
+                MaterialPageRoute(builder: (context) => const FiadosScreen()),
               );
             }),
             const SizedBox(width: 20),
@@ -69,8 +70,8 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        minimumSize: const Size(20, 20), // Defina o tamanho mínimo aqui
-        maximumSize: const Size(100, 80), // Defina o tamanho máximo aqui
+        minimumSize: const Size(20, 20), 
+        maximumSize: const Size(100, 80),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -83,54 +84,6 @@ class CustomButton extends StatelessWidget {
           const SizedBox(height: 5),
           Text(text),
         ],
-      ),
-    );
-  }
-}
-
-// class FiadosScreen extends StatelessWidget {
-//   const FiadosScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Tela de Fiados'),
-//       ),
-//       body: const Center(
-//         child: Text('Conteúdo da Tela de Fiados'),
-//       ),
-//     );
-//   }
-// }
-
-// class RecebidoScreen extends StatelessWidget {
-//   const RecebidoScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Tela de Recebido'),
-//       ),
-//       body: const Center(
-//         child: Text('Conteúdo da Tela de Recebido'),
-//       ),
-//     );
-//   }
-// }
-
-class EditarScreen extends StatelessWidget {
-  const EditarScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tela de Editar'),
-      ),
-      body: const Center(
-        child: Text('Conteúdo da Tela de Editar'),
       ),
     );
   }
