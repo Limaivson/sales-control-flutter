@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sales_control/fiados.dart';
-import 'package:sales_control/page/pageFiados.dart';
 
 class AdicionarClienteScreen extends StatefulWidget {
   final Function(Fiado) onAddClient;
