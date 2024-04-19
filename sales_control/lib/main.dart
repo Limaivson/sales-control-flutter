@@ -24,33 +24,42 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Menu Principal'),
-      // ),
       body: Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            CustomButton(icon: Icons.money, text: 'Fiados', onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const FiadosScreen()),
-              );
-            }),
+            CustomButton(
+                icon: Icons.money,
+                text: 'Fiados',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const FiadosScreen()),
+                  );
+                }),
             const SizedBox(width: 20),
-            CustomButton(icon: Icons.attach_money, text: 'Recebido', onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const RecebidosScreen()),
-              );
-            }),
+            CustomButton(
+                icon: Icons.attach_money,
+                text: 'Recebido',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RecebidosScreen()),
+                  );
+                }),
             const SizedBox(width: 20),
-            CustomButton(icon: Icons.edit, text: 'Editar', onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const EditarScreen()),
-              );
-            }),
+            CustomButton(
+                icon: Icons.edit,
+                text: 'Editar',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const EditarScreen()),
+                  );
+                }),
           ],
         ),
       ),
@@ -63,14 +72,18 @@ class CustomButton extends StatelessWidget {
   final String text;
   final void Function() onPressed;
 
-  const CustomButton({super.key, required this.icon, required this.text, required this.onPressed});
+  const CustomButton(
+      {super.key,
+      required this.icon,
+      required this.text,
+      required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        minimumSize: const Size(20, 20), 
+        minimumSize: const Size(20, 20),
         maximumSize: const Size(100, 80),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         shape: RoundedRectangleBorder(
