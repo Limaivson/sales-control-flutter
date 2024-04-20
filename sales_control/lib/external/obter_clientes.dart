@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:sales_control/adapter/clientes_adapter.dart' as adapterClientes;
 import 'package:sales_control/entities/cliente.dart';
 import 'package:http/http.dart' as http;
+import 'package:sales_control/external/url.dart';
 
 class ObterListaClientes{
-  String url = 'http://127.0.0.1:8000';
 
   Future<List<Cliente>> obterClientes() async {
     var response = await http.get(Uri.parse('$url/listar-clientes/'));
