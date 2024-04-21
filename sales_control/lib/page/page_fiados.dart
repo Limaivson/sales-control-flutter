@@ -1,6 +1,6 @@
-// ignore_for_file: library_private_types_in_public_api, use_super_parameters, library_prefixes
-
 import 'package:flutter/material.dart';
+import 'package:sales_control/entities/funcionario.dart';
+import 'package:sales_control/external/obter_funcionarios.dart';
 import 'package:sales_control/page/adicionar_cliente.dart';
 import 'package:sales_control/entities/cliente.dart';
 import 'package:sales_control/external/obter_clientes.dart' as listaClientes;
@@ -28,12 +28,31 @@ class _FiadosScreenState extends State<FiadosScreen> {
   final TextEditingController _valorController = TextEditingController();
   String _selectedClient = '';
   String _selectedFuncionario = '';
-  final List<String> _funcionarios = ['Selecione um funcionário', 'Funcionário 1', 'Funcionário 2', 'Funcionário 3'];
+  late List<DropdownMenuItem<String>> _itensDoMenuSuspenso = [];
 
   @override
   void initState() {
     super.initState();
     clientesFuture = listaClientes.ObterListaClientes().obterClientes();
+    _carregarItensDoMenuSuspenso();
+  }
+
+  Future<void> _carregarItensDoMenuSuspenso() async {
+    List<DropdownMenuItem<String>> itens = await _construirItensDoMenuSuspenso();
+    setState(() {
+      _itensDoMenuSuspenso = itens;
+      _selectedFuncionario = itens.isNotEmpty ? itens.first.value! : 'Selecione um funcionário';
+    });
+  }
+
+  Future<List<DropdownMenuItem<String>>> _construirItensDoMenuSuspenso() async {
+    List<Funcionario> funcionarios = await ObterFuncionarios().obterFuncionarios();
+    return funcionarios.map((funcionario) {
+      return DropdownMenuItem<String>(
+        value: funcionario.nome,
+        child: Text(funcionario.nome),
+      );
+    }).toList();
   }
 
   @override
@@ -122,9 +141,8 @@ class _FiadosScreenState extends State<FiadosScreen> {
 
   Future<void> _mostrarPopupPagamento(BuildContext context, Cliente cliente) async {
     _valorController.clear();
-    _selectedFuncionario = _funcionarios.first;
 
-    return showDialog<void>(
+    showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -148,12 +166,7 @@ class _FiadosScreenState extends State<FiadosScreen> {
                       _selectedFuncionario = newValue!;
                     });
                   },
-                  items: _funcionarios.map((funcionario) {
-                    return DropdownMenuItem<String>(
-                      value: funcionario,
-                      child: Text(funcionario),
-                    );
-                  }).toList(),
+                  items: _itensDoMenuSuspenso,
                   decoration: const InputDecoration(labelText: 'Selecione o funcionário'),
                 ),
               ],
@@ -168,7 +181,7 @@ class _FiadosScreenState extends State<FiadosScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                if (_valorController.text.isNotEmpty && _selectedFuncionario != _funcionarios.first) {
+                if (_valorController.text.isNotEmpty && _itensDoMenuSuspenso.isNotEmpty && _selectedFuncionario != '') {
                   // Aqui você pode implementar a lógica para registrar o pagamento
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Pagamento registrado com sucesso')),
