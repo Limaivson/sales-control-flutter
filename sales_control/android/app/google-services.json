@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "945984941623",
+    "firebase_url": "https://rafael-gas-default-rtdb.firebaseio.com",
+    "project_id": "rafael-gas",
+    "storage_bucket": "rafael-gas.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945984941623:android:78d457efe78eab40a799b2",
+        "android_client_info": {
+          "package_name": "com.example.sales_control"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4QWfmsOBrVnCmbHClEJVzNk06LTB5Z7U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
