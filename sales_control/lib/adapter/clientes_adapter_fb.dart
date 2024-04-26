@@ -23,6 +23,7 @@ List<Cliente> fbToCliente(QuerySnapshot snap) {
         dataRealizacaoPagamento: dados['dataRealizacaoPagamento'] != null ?
             '${dados['dataRealizacaoPagamento'].toDate().day}/${dados['dataRealizacaoPagamento'].toDate().month}/${dados['dataRealizacaoPagamento'].toDate().year}' : '',
         tipoPagamento: dados['tipoPagamento'] ?? "",
+        pago: dados['pago'] ?? false,
       ),
       funcionario: Funcionario(nome: nomeFunc),
     );
