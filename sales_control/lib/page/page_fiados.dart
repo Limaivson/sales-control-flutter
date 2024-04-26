@@ -1,3 +1,4 @@
+// ignore_for_file: library_private_types_in_public_api, use_super_parameters, library_prefixes
 import 'package:flutter/material.dart';
 import 'package:sales_control/entities/cliente.dart';
 import 'package:sales_control/page/adicionar_cliente.dart';
@@ -25,7 +26,6 @@ class _FiadosScreenState extends State<FiadosScreen> {
   late Future<List<Cliente>> clientesFuture;
   final TextEditingController _valorController = TextEditingController();
   String _selectedClient = '';
-  late List<DropdownMenuItem<String>> _itensDoMenuSuspenso = [];
   late List<Cliente> _clientesFiltrados = [];
 
   @override
@@ -79,7 +79,7 @@ class _FiadosScreenState extends State<FiadosScreen> {
                         _mostrarDetalhesCliente(context, cliente);
                       },
                       child: Container(
-                        margin: EdgeInsets.symmetric(vertical: 5.0),
+                        margin: const EdgeInsets.symmetric(vertical: 5.0),
                         decoration: BoxDecoration(
                           color: Colors.blueGrey[700],
                           borderRadius: BorderRadius.circular(15.0),
@@ -94,16 +94,16 @@ class _FiadosScreenState extends State<FiadosScreen> {
                                 children: [
                                   Text(
                                     cliente.nome,
-                                    style: TextStyle(color: Colors.white),
+                                    style: const TextStyle(color: Colors.white),
                                   ),
                                   Text(
                                     cliente.endereco,
-                                    style: TextStyle(color: Colors.white),
+                                    style: const TextStyle(color: Colors.white),
                                   ),
                                 ],
                               ),
                               IconButton(
-                                icon: Icon(Icons.attach_money, color: Colors.white),
+                                icon: const Icon(Icons.attach_money, color: Colors.white),
                                 onPressed: () {
                                   _mostrarPopupPagamento(context, cliente);
                                 },
@@ -206,11 +206,10 @@ class _FiadosScreenState extends State<FiadosScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Endereço: ${cliente.endereco}'),
-                if (cliente.telefone != null) Text('Telefone: ${cliente.telefone}'),
-                if (cliente.pagamento != null) Text('Pagamento: ${cliente.pagamento}'),
-                // if (cliente.dataPagamento != null) Text('Data de Pagamento: ${cliente.dataPagamento}'),
-                if (cliente.pagamento.dataPagamento != null) Text('Data de Recebimento: ${cliente.pagamento.dataPagamento}'),
-                if (cliente.pagamento.dataRealizacaoPagamento != null) Text('Data de Realização do Pagamento: ${cliente.pagamento.dataRealizacaoPagamento}'),
+                Text('Telefone: ${cliente.telefone}'),
+                Text('Pagamento: ${cliente.pagamento.valor}'),
+                Text('Data de Recebimento: ${cliente.pagamento.dataPagamento}'),
+                Text('Data do Pagamento: ${cliente.pagamento.dataRealizacaoPagamento}'),
                 Text('Funcionário: ${cliente.funcionario.nome}'),
               ],
             ),
