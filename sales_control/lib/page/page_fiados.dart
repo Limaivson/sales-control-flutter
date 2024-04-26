@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sales_control/entities/funcionario.dart';
-import 'package:sales_control/external/obter_funcionarios.dart';
-import 'package:sales_control/page/adicionar_cliente.dart';
 import 'package:sales_control/entities/cliente.dart';
+import 'package:sales_control/page/adicionar_cliente.dart';
 import 'package:sales_control/external/obter_clientes.dart' as listaClientes;
 
 class MyApp extends StatelessWidget {
@@ -27,39 +25,20 @@ class _FiadosScreenState extends State<FiadosScreen> {
   late Future<List<Cliente>> clientesFuture;
   final TextEditingController _valorController = TextEditingController();
   String _selectedClient = '';
-  String _selectedFuncionario = '';
   late List<DropdownMenuItem<String>> _itensDoMenuSuspenso = [];
+  late List<Cliente> _clientesFiltrados = [];
 
   @override
   void initState() {
     super.initState();
     clientesFuture = listaClientes.ObterListaClientes().obterClientes();
-    _carregarItensDoMenuSuspenso();
-  }
-
-  Future<void> _carregarItensDoMenuSuspenso() async {
-    List<DropdownMenuItem<String>> itens = await _construirItensDoMenuSuspenso();
-    setState(() {
-      _itensDoMenuSuspenso = itens;
-      _selectedFuncionario = itens.isNotEmpty ? itens.first.value! : 'Selecione um funcionário';
-    });
-  }
-
-  Future<List<DropdownMenuItem<String>>> _construirItensDoMenuSuspenso() async {
-    List<Funcionario> funcionarios = await ObterFuncionarios().obterFuncionarios();
-    return funcionarios.map((funcionario) {
-      return DropdownMenuItem<String>(
-        value: funcionario.nome,
-        child: Text(funcionario.nome),
-      );
-    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueGrey[900], // Cor do AppBar
+        backgroundColor: Colors.blueGrey[900],
         title: Center(
           child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.5,
@@ -67,20 +46,21 @@ class _FiadosScreenState extends State<FiadosScreen> {
               onChanged: (value) {
                 setState(() {
                   _selectedClient = value;
+                  _filtrarClientes(value); // Não precisamos esperar pelo resultado, pois estamos atualizando a lista localmente
                 });
               },
               decoration: const InputDecoration(
                 labelText: 'Buscar por nome',
-                labelStyle: TextStyle(color: Colors.white), // Cor do texto da label
+                labelStyle: TextStyle(color: Colors.white),
                 prefixIcon: Icon(Icons.search),
               ),
             ),
           ),
         ),
       ),
-      backgroundColor: Colors.blueGrey[100], // Cor de fundo da janela
+      backgroundColor: Colors.blueGrey[100],
       body: Padding(
-        padding: const EdgeInsets.all(50.0),
+        padding: const EdgeInsets.all(20.0),
         child: Center(
           child: FutureBuilder<List<Cliente>>(
             future: clientesFuture,
@@ -91,32 +71,49 @@ class _FiadosScreenState extends State<FiadosScreen> {
                 return const Text('Erro ao carregar os clientes');
               } else {
                 List<Cliente> clientes = snapshot.data!;
-                return SingleChildScrollView(
-                  child: DataTable(
-                    columns: const [
-                      DataColumn(label: Text('Nome')),
-                      DataColumn(label: Text('Endereço')),
-                      DataColumn(label: Text('Telefone')),
-                    ],
-                    rows: clientes
-                        .where((cliente) => cliente.nome.toLowerCase().contains(_selectedClient.toLowerCase()))
-                        .map((cliente) {
-                      return DataRow(
-                        cells: [
-                          DataCell(
-                            InkWell(
-                              onTap: () {
-                                _mostrarPopupPagamento(context, cliente);
-                              },
-                              child: Text(cliente.nome),
-                            ),
+                List<Cliente> clientesParaExibir = _selectedClient.isNotEmpty ? _clientesFiltrados : clientes;
+                return ListView(
+                  children: clientesParaExibir.map((cliente) {
+                    return InkWell(
+                      onTap: () {
+                        _mostrarDetalhesCliente(context, cliente);
+                      },
+                      child: Container(
+                        margin: EdgeInsets.symmetric(vertical: 5.0),
+                        decoration: BoxDecoration(
+                          color: Colors.blueGrey[700],
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    cliente.nome,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  Text(
+                                    cliente.endereco,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.attach_money, color: Colors.white),
+                                onPressed: () {
+                                  _mostrarPopupPagamento(context, cliente);
+                                },
+                              ),
+                            ],
                           ),
-                          DataCell(Text(cliente.endereco)),
-                          DataCell(Text(cliente.telefone)),
-                        ],
-                      );
-                    }).toList(),
-                  ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 );
               }
             },
@@ -139,6 +136,14 @@ class _FiadosScreenState extends State<FiadosScreen> {
     );
   }
 
+  void _filtrarClientes(String searchTerm) {
+    clientesFuture.then((clientes) {
+      setState(() {
+        _clientesFiltrados = clientes.where((cliente) => cliente.nome.toLowerCase().contains(searchTerm.toLowerCase())).toList();
+      });
+    });
+  }
+
   Future<void> _mostrarPopupPagamento(BuildContext context, Cliente cliente) async {
     _valorController.clear();
 
@@ -158,17 +163,6 @@ class _FiadosScreenState extends State<FiadosScreen> {
                   controller: _valorController,
                   decoration: const InputDecoration(labelText: 'Valor do pagamento'),
                 ),
-                const SizedBox(height: 20),
-                DropdownButtonFormField<String>(
-                  value: _selectedFuncionario,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _selectedFuncionario = newValue!;
-                    });
-                  },
-                  items: _itensDoMenuSuspenso,
-                  decoration: const InputDecoration(labelText: 'Selecione o funcionário'),
-                ),
               ],
             ),
           ),
@@ -181,7 +175,7 @@ class _FiadosScreenState extends State<FiadosScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                if (_valorController.text.isNotEmpty && _itensDoMenuSuspenso.isNotEmpty && _selectedFuncionario != '') {
+                if (_valorController.text.isNotEmpty) {
                   // Aqui você pode implementar a lógica para registrar o pagamento
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Pagamento registrado com sucesso')),
@@ -194,6 +188,39 @@ class _FiadosScreenState extends State<FiadosScreen> {
                 }
               },
               child: const Text('Registrar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _mostrarDetalhesCliente(BuildContext context, Cliente cliente) {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(cliente.nome),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Endereço: ${cliente.endereco}'),
+                if (cliente.telefone != null) Text('Telefone: ${cliente.telefone}'),
+                if (cliente.pagamento != null) Text('Pagamento: ${cliente.pagamento}'),
+                // if (cliente.dataPagamento != null) Text('Data de Pagamento: ${cliente.dataPagamento}'),
+                if (cliente.pagamento.dataPagamento != null) Text('Data de Recebimento: ${cliente.pagamento.dataPagamento}'),
+                if (cliente.pagamento.dataRealizacaoPagamento != null) Text('Data de Realização do Pagamento: ${cliente.pagamento.dataRealizacaoPagamento}'),
+                Text('Funcionário: ${cliente.funcionario.nome}'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Fechar'),
             ),
           ],
         );
