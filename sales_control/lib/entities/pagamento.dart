@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_initializing_formals
 
 class Pagamento{
-  late double valor;
+  late String valor;
   late String tipoPagamento;
   late String dataPagamento;
   late String dataRealizacaoPagamento;
