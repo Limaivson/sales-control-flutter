@@ -1,16 +1,20 @@
+// ignore_for_file: prefer_initializing_formals
+
 class Pagamento{
-  // final int idCliente;
-  // final int idFuncionario;
-  late String valor;
+  late double valor;
   late String tipoPagamento;
-  late String data;
+  late String dataPagamento;
+  late String dataRealizacaoPagamento;
 
   Pagamento({
     required valor,
-    required tipoPagamento, 
-    required data}){
+    required tipoPagamento,
+    required dataPagamento,
+    required dataRealizacaoPagamento
+    }){
     this.valor = valor;
     this.tipoPagamento = tipoPagamento;
-    this.data = data;
+    this.dataPagamento = dataPagamento;
+    this.dataRealizacaoPagamento = dataRealizacaoPagamento;
     }
 }
