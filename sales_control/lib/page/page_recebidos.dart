@@ -33,7 +33,7 @@ class _RecebidosScreenState extends State<RecebidosScreen> {
   @override
   void initState() {
     super.initState();
-    clientesFuture = listaClientes.ObterListaClientes().obterClientesRecebidos();
+    // clientesFuture = listaClientes.ObterListaClientes().obterClientesRecebidos();
   }
 
   @override
@@ -71,7 +71,7 @@ class _RecebidosScreenState extends State<RecebidosScreen> {
                       DataCell(Text(cliente.funcionario.nome)),
                       DataCell(Text(cliente.pagamento.valor.toString())),
                       DataCell(Text(cliente.pagamento.tipoPagamento)),
-                      DataCell(Text(cliente.pagamento.data.toString())),
+                      // DataCell(Text(cliente.pagamento.data.toString())),
                     ]);
                   }).toList(),
                 ),
