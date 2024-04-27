@@ -31,7 +31,7 @@ class _FiadosScreenState extends State<FiadosScreen> {
   @override
   void initState() {
     super.initState();
-    clientesFuture = listaClientes.ObterListaClientes().obterClientes();
+    clientesFuture = listaClientes.ObterListaClientes().obterClientes(true);
   }
 
   @override
@@ -43,6 +43,7 @@ class _FiadosScreenState extends State<FiadosScreen> {
           child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.5,
             child: TextField(
+              style: const TextStyle(color: Colors.white),
               onChanged: (value) {
                 setState(() {
                   _selectedClient = value;
@@ -196,34 +197,63 @@ class _FiadosScreenState extends State<FiadosScreen> {
   }
 
   void _mostrarDetalhesCliente(BuildContext context, Cliente cliente) {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(cliente.nome),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Endereço: ${cliente.endereco}'),
-                Text('Telefone: ${cliente.telefone}'),
-                Text('Pagamento: ${cliente.pagamento.valor}'),
-                Text('Data de Recebimento: ${cliente.pagamento.dataPagamento}'),
-                Text('Data do Pagamento: ${cliente.pagamento.dataRealizacaoPagamento}'),
-                Text('Funcionário: ${cliente.funcionario.nome}'),
-              ],
-            ),
+  showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(cliente.nome),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildFormattedText(cliente.endereco, 'Endereço: '),
+              _buildFormattedText(cliente.telefone, 'Telefone: '),
+              _buildFormattedText(cliente.pagamento.valor, 'Pagamento: '),
+              _buildFormattedText(cliente.dataCompra, 'Data da Compra: '),
+              _buildFormattedText(cliente.pagamento.dataPagamento, 'Data de Recebimento: '),
+              _buildFormattedText(cliente.pagamento.dataRealizacaoPagamento == '' ? cliente.pagamento.dataRealizacaoPagamento : 'Não realizado', 'Data do Pagamento: '),
+              _buildFormattedText(cliente.funcionario.nome, 'Funcionário: '),
+            ],
           ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Fechar'),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Fechar'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Widget _buildFormattedText(String content, String label) {
+  return content.isEmpty
+      ? const SizedBox.shrink() // Se o conteúdo estiver vazio, retorna um widget vazio
+      : Row(
+          crossAxisAlignment: CrossAxisAlignment.center, // Alinha o conteúdo verticalmente ao centro
+          children: [
+            Text(
+              label,
+              style: const TextStyle(fontWeight: FontWeight.bold), // Estilo para o rótulo
             ),
+            const SizedBox(width: 4), // Espaçamento entre o rótulo e o conteúdo
+            Container(
+              padding: const EdgeInsets.all(8), // Espaçamento interno do frame
+              decoration: BoxDecoration(
+                color: Colors.blueGrey[700], // Cor de fundo do frame
+                borderRadius: BorderRadius.circular(8), // Borda arredondada do frame
+              ),
+              child: Text(
+                content,
+                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white), // Estilo para o conteúdo variável
+              ),
+            ),
+            const SizedBox(width: 12, height: 40), // Espaçamento à direita do frame
           ],
         );
-      },
-    );
-  }
+}
+
 }
