@@ -4,12 +4,15 @@ import 'package:sales_control/entities/funcionario.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sales_control/entities/pagamento.dart';
 
-List<Cliente> fbToCliente(QuerySnapshot snap) {
-  List<Cliente> clientes = [];
+List<Cliente> fbToClienteFiados(QuerySnapshot snap, bool fiado) {
+  List<Cliente> clientesFiados = [];
+  List<Cliente> clientesRecebidos = [];
   for (QueryDocumentSnapshot clienteFb in snap.docs) {
     Map<String, dynamic> dados = clienteFb.data() as Map<String, dynamic>;
     String nomeFunc = nomeFuncionario(dados['nomeFuncionario']);
-    Cliente cliente = Cliente(
+    bool pago = dados['pago'];
+    
+      Cliente cliente = Cliente(
       id: clienteFb.id,
       nome: dados['nomeCliente'] ?? "",
       telefone: dados['telefone'] ?? "",
@@ -27,9 +30,19 @@ List<Cliente> fbToCliente(QuerySnapshot snap) {
       ),
       funcionario: Funcionario(nome: nomeFunc),
     );
-    clientes.add(cliente);
+    if(pago==false){
+      clientesFiados.add(cliente);
+    }
+    else{
+      clientesRecebidos.add(cliente);
+    }
   }
-  return clientes;
+  if(fiado){
+    return clientesFiados;
+  }
+  else{
+    return clientesRecebidos;
+  }
 }
 
 String nomeFuncionario(String nomeFuncionario) {
