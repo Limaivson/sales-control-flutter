@@ -4,7 +4,7 @@ import 'package:sales_control/entities/funcionario.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sales_control/entities/pagamento.dart';
 
-List<Cliente> fbToClienteFiados(QuerySnapshot snap, bool fiado) {
+List<Cliente> fbToCliente(QuerySnapshot snap, bool fiado) {
   List<Cliente> clientesFiados = [];
   List<Cliente> clientesRecebidos = [];
   for (QueryDocumentSnapshot clienteFb in snap.docs) {
