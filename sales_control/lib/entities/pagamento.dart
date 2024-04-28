@@ -5,7 +5,7 @@ class Pagamento{
   late String tipoPagamento;
   late String dataPagamento;
   late String dataRealizacaoPagamento;
-  final bool pago;
+  late bool pago;
 
   Pagamento({
     required this.valor,
