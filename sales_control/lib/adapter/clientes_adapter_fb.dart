@@ -1,4 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages
+import 'package:sales_control/adapter/funcionarios_adapter.dart';
 import 'package:sales_control/entities/cliente.dart';
 import 'package:sales_control/entities/funcionario.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,29 +39,12 @@ List<Cliente> fbToCliente(QuerySnapshot snap, bool fiado) {
     }
   }
   if(fiado){
+    print('Clientes fiados: ${clientesFiados}');
     return clientesFiados;
   }
   else{
+    print(clientesRecebidos);
     return clientesRecebidos;
   }
 }
 
-String nomeFuncionario(String nomeFuncionario) {
-  if(nomeFuncionario == 'p@gmail.com'){
-    nomeFuncionario = 'Pedro';
-    return nomeFuncionario;
-  } else if(nomeFuncionario == 'je@gmail.com'){
-    nomeFuncionario = 'José Eudes';
-    return nomeFuncionario;
-  } else if(nomeFuncionario == 'rss@gmail.com'){
-    nomeFuncionario = 'Rafael';
-    return nomeFuncionario;
-  } else if(nomeFuncionario == 's@gmail.com'){
-    nomeFuncionario = 'Suemo';
-    return nomeFuncionario;
-  } else if(nomeFuncionario == 'mj@gmail.com'){
-    nomeFuncionario = 'Marcos José';
-    return nomeFuncionario;
-  }
-  return 'Funcionário não encontrado';
-}
