@@ -1,8 +1,10 @@
-// ignore_for_file: library_private_types_in_public_api, use_super_parameters, library_prefixes
+// ignore_for_file: library_private_types_in_public_api, use_super_parameters, library_prefixes, use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:sales_control/entities/cliente.dart';
+import 'package:sales_control/external/realizar_pagamento.dart';
 import 'package:sales_control/page/adicionar_cliente.dart';
 import 'package:sales_control/external/obter_clientes.dart' as listaClientes;
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -146,54 +148,86 @@ class _FiadosScreenState extends State<FiadosScreen> {
   }
 
   Future<void> _mostrarPopupPagamento(BuildContext context, Cliente cliente) async {
-    _valorController.clear();
+  _valorController.clear();
 
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Registrar Pagamento'),
-          content: SingleChildScrollView(
-            child: Column(
+  String emailLogado = await _obterEmailLogado();
+
+showDialog<void>(
+  context: context,
+  builder: (BuildContext context) {
+    return AlertDialog(
+      title: const Text('Registrar Pagamento'),
+      content: SingleChildScrollView(
+        child: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 10),
-                Text('Cliente: ${cliente.nome}'),
+                Text('${cliente.nome} está pagando ao funcionário $emailLogado'),
                 const SizedBox(height: 20),
                 TextField(
                   controller: _valorController,
                   decoration: const InputDecoration(labelText: 'Valor do pagamento'),
                 ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    const Text('Pagamento Completo:'),
+                    Switch(
+                      value: cliente.pagamento.pago,
+                      onChanged: (newValue) {
+                        setState(() {
+                          cliente.pagamento.pago = newValue;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (_valorController.text.isNotEmpty) {
-                  // Aqui você pode implementar a lógica para registrar o pagamento
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Pagamento registrado com sucesso')),
-                  );
-                  Navigator.of(context).pop();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Por favor, preencha todos os campos')),
-                  );
-                }
-              },
-              child: const Text('Registrar'),
-            ),
-          ],
-        );
-      },
+            );
+          },
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Cancelar'),
+        ),
+        ElevatedButton(
+          onPressed: () async{
+            if (_valorController.text.isNotEmpty) {
+              await pagar(cliente.id, _valorController.text, context, cliente.pagamento.pago);
+              Navigator.of(context).pop();
+              if (cliente.pagamento.pago) {
+              setState(() {
+                clientesFuture = listaClientes.ObterListaClientes().obterClientes(true);
+              });}
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Por favor, preencha todos os campos')),
+              );
+            }
+          },
+          child: const Text('Registrar'),
+        ),
+      ],
     );
+  },
+);
+}
+
+
+
+  Future<String> _obterEmailLogado() async{
+    FirebaseAuth auth = FirebaseAuth.instance;
+    if(auth.currentUser != null){
+      
+      return auth.currentUser!.email!;
+    }
+    return '';
   }
 
   void _mostrarDetalhesCliente(BuildContext context, Cliente cliente) {
