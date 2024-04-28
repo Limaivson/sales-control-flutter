@@ -1,15 +1,19 @@
-import 'package:sales_control/entities/funcionario.dart';
-
-List<Funcionario> jsonToFuncionario(Map<String, dynamic> json) {
-  List<Funcionario> funcionarios = [];
-  if (json.containsKey('funcionarios')) {
-    List<dynamic> funcionariosJson = json['funcionarios'];
-    for (Map funcionarioJson in funcionariosJson) {
-      Funcionario funcionario = Funcionario(
-        nome: funcionarioJson['nome'],
-      );
-      funcionarios.add(funcionario);
-    }
+String nomeFuncionario(String nomeFuncionario) {
+  if(nomeFuncionario == 'p@gmail.com'){
+    nomeFuncionario = 'Pedro';
+    return nomeFuncionario;
+  } else if(nomeFuncionario == 'je@gmail.com'){
+    nomeFuncionario = 'José Eudes';
+    return nomeFuncionario;
+  } else if(nomeFuncionario == 'rss@gmail.com'){
+    nomeFuncionario = 'Rafael';
+    return nomeFuncionario;
+  } else if(nomeFuncionario == 's@gmail.com'){
+    nomeFuncionario = 'Suemo';
+    return nomeFuncionario;
+  } else if(nomeFuncionario == 'mj@gmail.com'){
+    nomeFuncionario = 'Marcos José';
+    return nomeFuncionario;
   }
-  return funcionarios;
+  return 'Funcionário não encontrado';
 }
